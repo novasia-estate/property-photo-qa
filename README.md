@@ -1,5 +1,7 @@
 # Property Photo QA Workbench
 
+[Try the public synthetic report](https://novasia-estate.github.io/property-photo-qa/): six authored test images, two invented properties, property/flag filters and a cross-property exact-duplicate example. This is a generated demonstration; your own photos stay on your computer when you run the offline CLI.
+
 Before publishing a catalogue, review its photography as a batch: broken files, images below your requested size, exact duplicates, visual similarity candidates and potentially private GPS metadata. The result is a portable HTML contact sheet with property filters, plus a JSON issue report.
 
 ## Start
