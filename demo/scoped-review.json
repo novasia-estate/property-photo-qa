@@ -1,0 +1,80 @@
+{
+  "version": "1.2.0",
+  "limits": {
+    "min_width": 1200,
+    "min_height": 800,
+    "near_threshold": 4,
+    "max_files": 1000,
+    "max_bytes": 30000000
+  },
+  "images": [
+    {
+      "path": "bedroom.jpg",
+      "property_id": "DEMO-A12",
+      "flags": [],
+      "width": 1400,
+      "height": 1000,
+      "sha256": "124eb434722300240fc4f16c27e1ea0956cd0ea060b336aac9ef9373d9f39767",
+      "dhash": "056c868696969661",
+      "gps_present": false,
+      "bytes": 51990,
+      "format": "JPEG"
+    },
+    {
+      "path": "damaged.jpg",
+      "property_id": "DEMO-A12",
+      "flags": [
+        "unreadable_image"
+      ],
+      "width": null,
+      "height": null,
+      "sha256": "85bc07e1c179faee034f4b8242ded57edc17da0b4aa52984e67cc5c3ae47a9f8",
+      "dhash": null,
+      "gps_present": false,
+      "bytes": 31,
+      "error": "UnidentifiedImageError"
+    },
+    {
+      "path": "living.jpg",
+      "property_id": "DEMO-A12",
+      "flags": [],
+      "width": 1400,
+      "height": 1000,
+      "sha256": "8f48f1d086c9cec5415a9c15cdcbad622dfe61d20974916fac3923b383689f82",
+      "dhash": "0729c9c927262641",
+      "gps_present": false,
+      "bytes": 55215,
+      "format": "JPEG"
+    }
+  ],
+  "pairs": [],
+  "unused_mapping_paths": [],
+  "summary": {
+    "images": 3,
+    "flagged": 1,
+    "exact_pairs": 0,
+    "visual_candidates": 0
+  },
+  "review_scope": {
+    "discovered_images": 6,
+    "audited_images": 3,
+    "excluded_images": [
+      {
+        "path": "balcony.jpg",
+        "property_id": "DEMO-B07",
+        "reason": "Synthetic demonstration: this property was reviewed separately. Not a clearance of the omitted images."
+      },
+      {
+        "path": "copied-living.jpg",
+        "property_id": "DEMO-B07",
+        "reason": "Synthetic demonstration: this property was reviewed separately. Not a clearance of the omitted images."
+      },
+      {
+        "path": "low-resolution.jpg",
+        "property_id": "DEMO-B07",
+        "reason": "Synthetic demonstration: this property was reviewed separately. Not a clearance of the omitted images."
+      }
+    ],
+    "notice": "Excluded images were not inspected or compared; no all-catalogue clearance is implied."
+  }
+}

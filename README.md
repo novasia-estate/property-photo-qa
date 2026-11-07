@@ -32,3 +32,14 @@ EXIF orientation is applied only to generated thumbnails; original bytes remain 
 `python -m unittest discover -s tests -v` exercises corruption, duplicates, GPS flags, mapping conflicts, report escaping and unchanged source files. [Report contract](docs/report.md) · [Privacy and review workflow](docs/privacy.md).
 
 Developed by [NovAsia Estate](https://novasia.estate/), a publisher of property guides and research for Cambodia, Thailand and Bali. This tool contains no inventory or market claims. MIT licensed.
+
+## 1.2: explicit review scope
+
+Reuse completed review work by excluding explicitly named property IDs with reasons.
+Create `reviewed.json`, for example `{"property-123":"Reviewed in batch 2026-11-06; unchanged"}`. IDs must exist in the current input and every reason must be nonempty (at most 500 characters). Unknown IDs fail so a stale exclusion file cannot silently change the scope. Files are bounded to 100 KB.
+
+```sh
+property-photo-qa ./photos --mapping mapping.csv --exclude-reviewed reviewed.json --out review
+```
+
+Library: `audit(root, mapping="mapping.csv", exclude_properties={"property-123":"Reviewed; unchanged"})`. Image mapping is required to identify excluded properties; the `unassigned` bucket cannot be excluded. Those photos are not decoded or compared for duplicates. HTML and JSON retain their exact relative paths, property IDs and reasons, discovered and audited counts. The configured discovery limit still covers all discovered photos. Exit status concerns only audited photos; excluded photos are never an all-catalogue clearance. Reviewer reasons are not verified evidence. Without this option all photos are checked as before.
