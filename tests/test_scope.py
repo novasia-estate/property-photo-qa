@@ -1,4 +1,4 @@
-import tempfile,unittest
+import tempfile,unittest,importlib
 from pathlib import Path
 from unittest.mock import patch
 from PIL import Image
@@ -13,7 +13,7 @@ class PhotoScopeTests(unittest.TestCase):
     def tearDown(self):self.tmp.cleanup()
     def test_excluded_property_not_decoded_or_paired(self):
         from property_photo_qa.audit import inspect_image
-        with patch('property_photo_qa.audit.inspect_image',wraps=inspect_image) as inspect:
+        with patch.object(importlib.import_module('property_photo_qa.audit'),'inspect_image',wraps=inspect_image) as inspect:
             r=audit(self.root,mapping=self.mapping,exclude_properties={'A':'Reviewed'})
         self.assertEqual(inspect.call_count,1);self.assertEqual(r['summary']['exact_pairs'],0);self.assertEqual([x['path'] for x in r['images']],['b.png']);self.assertEqual(r['unused_mapping_paths'],[])
         self.assertEqual(r['review_scope']['excluded_images'],[{'path':'a.png','property_id':'A','reason':'Reviewed'}])
