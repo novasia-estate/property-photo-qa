@@ -5,17 +5,33 @@ from .scope import review_exclusions
 EXTENSIONS={'.jpg','.jpeg','.png','.webp','.tif','.tiff'}
 
 def load_mapping(path):
-    if path is None:return {}
-    with Path(path).open(encoding='utf-8-sig',newline='') as f:
-        reader=csv.DictReader(f)
-        if not {'relative_path','property_id'}<=set(reader.fieldnames or []):raise ValueError('Mapping requires relative_path,property_id')
-        result={}
-        for row in reader:
-            name=row['relative_path']
-            if name in result:raise ValueError('Duplicate mapping path: '+name)
-            if not row['property_id'].strip():raise ValueError('Empty property ID')
-            result[name]=row['property_id']
-        return result
+    if path is None:
+        return {}
+    result = {}
+    with Path(path).open(encoding='utf-8-sig', newline='') as source:
+        reader = csv.reader(source, strict=True)
+        try:
+            headers = next(reader, [])
+            if not {'relative_path', 'property_id'} <= set(headers):
+                raise ValueError('Mapping requires relative_path,property_id')
+            if len(headers) != len(set(headers)) or any(not name.strip() for name in headers):
+                raise ValueError('Mapping header names must be unique and nonempty')
+            path_column, id_column = headers.index('relative_path'), headers.index('property_id')
+            for row in reader:
+                if not row:
+                    continue
+                line = reader.line_num
+                if len(row) != len(headers):
+                    raise ValueError(f'Mapping row ending at line {line} has the wrong number of fields')
+                name, property_id = row[path_column], row[id_column]
+                if not name.strip() or not property_id.strip():
+                    raise ValueError(f'Mapping row ending at line {line} needs a path and property ID')
+                if name in result:
+                    raise ValueError(f'Duplicate mapping path at line {line}: {name}')
+                result[name] = property_id
+        except csv.Error as error:
+            raise ValueError(f'Malformed mapping CSV near line {reader.line_num}: {error}') from error
+    return result
 
 def audit(root, *, mapping=None, min_width=1200, min_height=800, near_threshold=4, max_files=1000, max_bytes=30_000_000, exclude_properties=None):
     root=Path(root).resolve(strict=True)

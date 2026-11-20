@@ -21,6 +21,8 @@ Filter the contact sheet by property or review flagged files only. Inspect origi
 
 Mapping CSV columns are `relative_path,property_id`, using forward slashes. Every mapping path must be unique; unmapped files remain `unassigned`. Unused mappings are reported. Thresholds are caller choices, not a portal's required standard. JPEG, PNG, WebP and TIFF are supported.
 
+Additional named CSV columns are allowed. Column names must be unique, every row must contain the same number of fields as the header, and the path and property ID must both be present. For example, a row containing only `tower-a/photo.jpg` is rejected with its line number instead of generating a partial report. Correct the mapping and rerun the audit.
+
 ## Limits worth understanding
 
 Exact duplicates use SHA-256. Similarity uses a 64-bit difference hash and is a candidate-generation heuristic: plain walls, repeated layouts and heavily edited copies can confuse it. No automatic deletion, copyright decision, room classification or quality score is produced. There is no blur or authenticity claim.

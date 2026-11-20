@@ -31,6 +31,27 @@ class AuditTests(unittest.TestCase):
     def test_duplicate_mapping_rejected(self):
         m=self.root/'mapping.csv';m.write_text('relative_path,property_id\na,A\na,B\n')
         with self.assertRaises(ValueError):audit(self.root,mapping=m)
+    def test_malformed_mapping_cannot_hide_or_reassign_an_image(self):
+        self.photo()
+        mapping = self.root / 'mapping.csv'
+        for text, message in [
+            ('relative_path,property_id\none.png\n', 'line 2.*wrong number'),
+            ('relative_path,property_id\none.png,A,B\n', 'line 2.*wrong number'),
+            ('relative_path,property_id,property_id\none.png,A,B\n', 'header names must be unique'),
+            ('relative_path,property_id\n   ,A\n', 'line 2.*needs a path and property ID'),
+            ('relative_path,property_id\none.png,"A\n', 'Malformed mapping CSV near line 2'),
+        ]:
+            with self.subTest(text=text):
+                mapping.write_text(text, encoding='utf-8')
+                with self.assertRaisesRegex(ValueError, message):
+                    audit(self.root, mapping=mapping)
+    def test_bom_and_additional_named_mapping_columns_are_supported(self):
+        self.photo('unit,one.png')
+        mapping = self.root / 'mapping.csv'
+        mapping.write_text('relative_path,property_id,notes\n"unit,one.png",TOWER-A,"brochure,\npage 2"\n', encoding='utf-8-sig')
+        report = audit(self.root, mapping=mapping)
+        self.assertEqual(report['images'][0]['property_id'], 'TOWER-A')
+        self.assertEqual(report['unused_mapping_paths'], [])
     def test_report_escapes_property_labels(self):
         self.photo();m=self.root/'mapping.csv';m.write_text('relative_path,property_id\none.png,<script>bad</script>\n')
         text=render(audit(self.root,mapping=m));self.assertNotIn('<script>bad</script>',text);self.assertIn('&lt;script&gt;',text)
